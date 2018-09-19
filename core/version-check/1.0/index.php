@@ -14,7 +14,7 @@ $json = [
         ],
         'current' => '1.0.0',
         'version' => '1.0.0',
-        'php_version' => '5.2.4',
+        'php_version' => '5.6.0',
         'mysql_version' => '5.0',
         'new_bundled' => '1.0.0',
         'partial_version' => false,
