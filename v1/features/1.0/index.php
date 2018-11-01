@@ -4,18 +4,16 @@
  * Query petition / voting / features requsts for ClassicPress
  * This API serves as a CORS compliant proxy service to fetch this data on behalf of ClassicPress installations
  *
- * $mode could be useful to parse incoming request variables and change what happens, once a more developed request
- * router is created
  */
 
-function get_petitions($mode = NULL) {
+function get_petitions() {
 
     /**
      * The format below dictates what is shown in the Features Dashboard block.  Put this together in this way
      * to drive potentially different data to ClassicPress Dashboard Features panel on-demand without pushing new CP code.
      *
-     * The array is shown in order, using the text string key at the visible section title
-     * The 'query' is passed to fider as the value for the 'query' parameter.
+     * The array is shown in order, using the text string key as the visible section title
+     * The 'query' is passed to fider as the value for the view parameter.
      * The 'limit' is passed to fider as the limit value
      * The 'tags' are passed to fider as the tags filter, and are shown on the Dashboard block below the excerpt
      * 'list_link' shows a link within the Dashboard block for the admin to click through and see the full list for that query-section
@@ -58,19 +56,22 @@ function get_petitions($mode = NULL) {
         if ($cbv['query'] != '') {
             $query_string .= 'view=' . $cbv['query'];
 
-            if ($cbv['tags'] != '')
+            if ($cbv['tags'] != '') {
                 $query_string .= '&tags=' . $cbv['tags'];
+            }
 
-            if (isset($cbv['limit']))
+            if (isset($cbv['limit'])) {
                 $query_string .= '&limit=' . $cbv['limit'];
+            }
         }
 
         // Go query the remote API, make sure reasonable parameters are passed if they are not set
         $query_result = proxy_query($query_string, ($cbv['method'] == '' ? 'GET' : $cbv['method']), ($cbv['action'] == '' ? 'posts' : $cbv['action']));
 
         // At a minimum, add the link to where the user can go to see the full list
-        if ($cbv['list_link'] != '')
+        if ($cbv['list_link'] != '') {
             $query_result['list_link'] = $cbv['list_link'];
+        }
 
         $response[] = [$cbk => $query_result];
     }
