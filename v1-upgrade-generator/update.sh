@@ -3,11 +3,11 @@
 # Exit on error
 set -e
 
+cd "$(dirname "$0")"
+
 echo 'Activating virtualenv'
 . bin/activate
 echo 'Activated virtualenv'
-
-cd "$(dirname "$0")"
 
 # Show commands as they are executed
 set -x
