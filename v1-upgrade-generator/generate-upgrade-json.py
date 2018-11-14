@@ -4,7 +4,6 @@ from dulwich.repo import Repo
 from json import dumps
 from os import rename, symlink
 from os.path import abspath, basename, dirname, join
-from pprint import pprint
 from semver import parse_version_info
 
 
