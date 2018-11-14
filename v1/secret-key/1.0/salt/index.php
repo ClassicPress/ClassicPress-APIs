@@ -27,16 +27,9 @@ function str_random($length = 64) {
     return substr($str, 0, $length);
 }
 
-$is_browser = false;
-$accept = array_map('trim', explode(',', $_SERVER['HTTP_ACCEPT'] ?? '', 20));
-foreach ($accept as $mime_type) {
-    if (preg_match('#^text/html(;|$)#', $mime_type)) {
-        $is_browser = true;
-        break;
-    }
-}
+require_once dirname(dirname(dirname(__DIR__))) . '/functions.php';
 
-if ($is_browser) {
+if (is_browser()) {
     // Send some extra info for humans
     echo <<<HTML
 <style>

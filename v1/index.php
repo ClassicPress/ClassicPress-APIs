@@ -1,13 +1,6 @@
 <?php
 
-$is_browser = false;
-$accept = array_map('trim', explode(',', $_SERVER['HTTP_ACCEPT'] ?? '', 20));
-foreach ($accept as $mime_type) {
-    if (preg_match('#^text/html(;|$)#', $mime_type)) {
-        $is_browser = true;
-        break;
-    }
-}
+require_once __DIR__ . '/functions.php';
 
 $endpoints = [
     '/core/stable-check/1.0/',
@@ -17,7 +10,7 @@ $endpoints = [
     '/secret-key/1.0/salt/',
 ];
 
-if ($is_browser) {
+if (is_browser()) {
     echo "<h2>Endpoints on this server:</h2>\n";
     echo "<ul>\n";
     foreach ($endpoints as $endpoint) {
