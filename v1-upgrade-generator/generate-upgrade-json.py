@@ -2,8 +2,8 @@
 
 from dulwich.repo import Repo
 from json import dumps
-from os import symlink
-from os.path import basename, dirname, abspath, join
+from os import rename, symlink
+from os.path import abspath, basename, dirname, join
 from pprint import pprint
 from semver import parse_version_info
 
@@ -18,6 +18,8 @@ def symlink_versions(ver_after, action, ver_before):
     src = json_filename(ver_after, action)
     dst = json_filename(ver_before)
     print 'symlink(src=%s, dst=%s)' % (basename(src), basename(dst))
+    symlink(basename(src), dst + '.tmp')
+    rename(dst + '.tmp', dst)
 
 def json_filename(ver, action = None):
     if action is None:
@@ -30,7 +32,7 @@ def write_json(ver, action):
     filename = json_filename(ver, action)
     print 'write_json(%s)' % basename(filename)
 
-    with open(filename, 'w') as json:
+    with open(filename + '.tmp', 'w') as json:
         json.write("""\
 {{
 "offers": [
@@ -54,6 +56,8 @@ def write_json(ver, action):
     }}
 ]
 }}""".format(action=action,ver=str(ver)))
+
+    rename(filename + '.tmp', filename)
 
 def write_and_link_latest_json(vecs, ver):
     vecs[ver.major][str(ver)] = 'latest'
