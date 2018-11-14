@@ -42,8 +42,8 @@ def write_json(ver, action):
         "locale":"en_US",
         "packages":{{
             "full":"https://github.com/ClassyBot/ClassicPress-builds/{ver}.zip",
-            "no_content":"https://github.com/ClassyBot/ClassicPress-builds/{ver}-no-content.zip",
-            "new_bundled":"https://github.com/ClassyBot/ClassicPress-builds/{ver}-new-bundled.zip",
+            "no_content":null,
+            "new_bundled":null,
             "partial":false,
             "rollback":false
         }},
