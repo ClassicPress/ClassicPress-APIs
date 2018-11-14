@@ -32,16 +32,21 @@ def write_json(ver, action):
     filename = json_filename(ver, action)
     print 'write_json(%s)' % basename(filename)
 
+    if '+nightly' in str(ver):
+        url = 'https://github.com/ClassyBot/ClassicPress-nightly/archive/%s.zip' % ver
+    else:
+        url = 'https://github.com/ClassicPress/ClassicPress-release/archive/%s.zip' % ver
+
     with open(filename + '.tmp', 'w') as json:
         json.write("""\
 {{
 "offers": [
     {{
         "response":"{action}",
-        "download":"https://github.com/ClassyBot/ClassicPress-builds/{ver}.zip",
+        "download":"{url}",
         "locale":"en_US",
         "packages":{{
-            "full":"https://github.com/ClassyBot/ClassicPress-builds/{ver}.zip",
+            "full":"{url}",
             "no_content":null,
             "new_bundled":null,
             "partial":false,
@@ -55,7 +60,7 @@ def write_json(ver, action):
         "partial_version":false
     }}
 ]
-}}""".format(action=action,ver=str(ver)))
+}}""".format(action=action, url=url, ver=str(ver)))
 
     rename(filename + '.tmp', filename)
 
