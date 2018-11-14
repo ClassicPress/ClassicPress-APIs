@@ -17,7 +17,7 @@ def dump(name, obj):
 def symlink_versions(ver_after, action, ver_before):
     src = json_filename(ver_after, action)
     dst = json_filename(ver_before)
-    print 'symlink(src=%s, dst=%s)' % (basename(src), basename(dst))
+    print 'symlink(%s -> %s)' % (basename(dst), basename(src))
     symlink(basename(src), dst + '.tmp')
     rename(dst + '.tmp', dst)
 
