@@ -11,7 +11,7 @@ usort($files, function($a, $b) {
 });
 
 if (is_browser()) {
-    echo "<h2>Upgrade API responses:</h2>\n";
+	echo "<h2>Upgrade API responses:</h2>\n";
 	echo "<ul>\n";
 	foreach ($files as $file) {
 		echo "<li><a href=\"$file\">$file</a></li>\n";
