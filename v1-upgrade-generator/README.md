@@ -14,10 +14,20 @@ Assuming that your system's default Python version is `2.7` or higher (but not
 environment:
 
 ```
+cd v1-upgrade-generator/
 virtualenv .
 . bin/activate
 pip install -r requirements.txt
 ```
 
-Then run the script using `python generate-upgrade-json.py` and the results
-will be placed in the `v1/upgrade/` folder in the root of this repository.
+The script relies on a couple of `git` repositories being in place:
+
+```
+cd v1-upgrade-generator/
+git clone https://github.com/ClassyBot/ClassicPress-nightly ClassicPress-nightly
+git clone https://github.com/ClassicPress/ClassicPress-release ClassicPress-release
+```
+
+Once the above setup is done, you can run the script using `python
+generate-upgrade-json.py` and the results will be placed in the `v1/upgrade/`
+folder in the root of this repository.

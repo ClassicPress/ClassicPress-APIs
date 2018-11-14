@@ -3,13 +3,32 @@
 from dulwich.repo import Repo
 from json import dumps
 from os import symlink
+from os.path import basename, dirname, abspath, join
 from pprint import pprint
 from semver import parse_version_info
 
 
-def write_json(ver, file, action):
-    filename = file+'.'+action
-    print 'Creating', filename
+script_dir = dirname(abspath(__file__))
+repo_root = dirname(script_dir)
+
+def dump(name, obj):
+    print name + ': ' + dumps(obj, sort_keys=True, indent=2)
+
+def symlink_versions(ver_after, action, ver_before):
+    src = json_filename(ver_after, action)
+    dst = json_filename(ver_before)
+    print 'symlink(src=%s, dst=%s)' % (basename(src), basename(dst))
+
+def json_filename(ver, action = None):
+    if action is None:
+        filename = '%s.json' % ver
+    else:
+        filename = '%s.%s.json' % (ver, action)
+    return join(repo_root, 'v1', 'upgrade', filename)
+
+def write_json(ver, action):
+    filename = json_filename(ver, action)
+    print 'write_json(%s)' % basename(filename)
 
     with open(filename, 'w') as json:
         json.write("""\
@@ -38,27 +57,28 @@ def write_json(ver, file, action):
 
 def write_and_link_latest_json(vecs, ver):
     vecs[ver.major][str(ver)] = 'latest'
-    write_json(ver, 'tree/'+str(ver), 'latest')
-    write_json(ver, 'tree/'+str(ver), 'update')
-    symlink(str(ver)+'.latest', 'tree/'+str(ver))
+    write_json(ver, 'latest')
+    write_json(ver, 'update')
+    symlink_versions(ver, 'latest', ver)
 
 
 
 tags = {}
 
-with Repo('../ClassicPress-nightly') as r:
+with Repo(join(script_dir, 'ClassicPress-nightly')) as r:
     tags.update(r.refs.as_dict('refs/tags'))
 
-with Repo('../ClassicPress-release') as r:
+with Repo(join(script_dir, 'ClassicPress-release')) as r:
     tags.update(r.refs.as_dict('refs/tags'))
 
+dump('tags', tags)
 
 vers = {}
 
-# we only care about nightly builds
 for tag in tags:
     try:
         ver = parse_version_info(tag)
+        # we only care about release and nightly builds
         if not ver.build or ver.build[:7] == 'nightly':
             if ver.major in vers:
                 vers[ver.major].append(ver)
@@ -67,6 +87,8 @@ for tag in tags:
     except ValueError:
         # ignore non-semver tags
         pass
+
+dump('vers', dict((major, sorted(str(v) for v in arr)) for (major, arr) in vers.iteritems()))
 
 vecs = {}
 
@@ -98,18 +120,17 @@ for major, version_list in vers.iteritems():
         if version.build:
             if str(version) != str(max_bld_ver):
                 vecs[major][str(version)] = str(max_bld_ver)
-                symlink(str(max_bld_ver)+'.update', 'tree/'+str(version))
+                symlink_versions(max_bld_ver, 'update', version)
         elif version.prerelease:
             if version < max_rel_ver:
                 vecs[major][str(version)] = str(max_rel_ver)
-                symlink(str(max_rel_ver)+'.update', 'tree/'+str(version))
+                symlink_versions(max_rel_ver, 'update', version)
             elif version != max_pre_ver:
                 vecs[major][str(version)] = str(max_pre_ver)
-                symlink(str(max_pre_ver)+'.update', 'tree/'+str(version))
+                symlink_versions(max_pre_ver, 'update', version)
         else:
             if version != max_rel_ver:
                 vecs[major][str(version)] = str(max_rel_ver)
-                symlink(str(max_rel_ver)+'.update', 'tree/'+str(version))
+                symlink_versions(max_rel_ver, 'update', version)
 
-print dumps(vecs, sort_keys=True, indent=2)
-
+dump('vecs', vecs)

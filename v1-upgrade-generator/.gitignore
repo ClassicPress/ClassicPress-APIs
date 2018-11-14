@@ -1,5 +1,9 @@
+# virtualenv files
 /bin/
 /include/
 /lib/
 /local/
 /pip-selfcheck.json
+# git repos
+/ClassicPress-nightly/
+/ClassicPress-release/
