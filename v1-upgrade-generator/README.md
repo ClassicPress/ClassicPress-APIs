@@ -28,6 +28,14 @@ git clone https://github.com/ClassyBot/ClassicPress-nightly ClassicPress-nightly
 git clone https://github.com/ClassicPress/ClassicPress-release ClassicPress-release
 ```
 
-Once the above setup is done, you can run the script using `python
-generate-upgrade-json.py` and the results will be placed in the `v1/upgrade/`
-folder in the root of this repository.
+Once the above setup is done, you can run the script as follows:
+
+```
+python generate-upgrade-json.py
+```
+
+The resulting files will be placed in the `v1/upgrade/` folder in the root of
+this repository.
+
+See also `update.sh` in this folder, which will fetch from the ClassicPress
+`git` repositories and then run the Python script.
