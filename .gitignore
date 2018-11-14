@@ -1,2 +1,1 @@
-/v1/upgrade/
-!/v1/upgrade/.gitkeep
+/v1/upgrade/*.json
