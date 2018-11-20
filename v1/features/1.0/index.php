@@ -33,7 +33,7 @@ function fider_list_tags() {
  */
 function fider_api_query($endpoint) {
     $api_endpoint = 'https://petitions.classicpress.net/api/v1' . $endpoint;
-    error_log($api_endpoint);
+
 
     $fch = curl_init($api_endpoint);
     curl_setopt($fch, CURLOPT_RETURNTRANSFER, true);
