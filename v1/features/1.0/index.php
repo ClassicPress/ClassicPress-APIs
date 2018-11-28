@@ -81,6 +81,7 @@ foreach (['most-wanted', 'trending', 'recent'] as $view) {
             'title' => $post['title'],
             'description' => $post['description'],
             'createdAt' => $post['createdAt'],
+            'createdBy' => $post['user']['name'],
             'votesCount' => $post['votesCount'],
             'commentsCount' => $post['commentsCount'],
             'status' => $post['status'],
