@@ -66,7 +66,7 @@ def write_json(ver, action):
 def write_and_link_latest_json(vecs, ver):
     vecs[ver.major][str(ver)] = 'latest'
     write_json(ver, 'latest')
-    write_json(ver, 'update')
+    write_json(ver, 'upgrade')
     symlink_versions(ver, 'latest', ver)
 
 
@@ -128,17 +128,17 @@ for major, version_list in vers.iteritems():
         if version.build:
             if str(version) != str(max_bld_ver):
                 vecs[major][str(version)] = str(max_bld_ver)
-                symlink_versions(max_bld_ver, 'update', version)
+                symlink_versions(max_bld_ver, 'upgrade', version)
         elif version.prerelease:
             if version < max_rel_ver:
                 vecs[major][str(version)] = str(max_rel_ver)
-                symlink_versions(max_rel_ver, 'update', version)
+                symlink_versions(max_rel_ver, 'upgrade', version)
             elif version != max_pre_ver:
                 vecs[major][str(version)] = str(max_pre_ver)
-                symlink_versions(max_pre_ver, 'update', version)
+                symlink_versions(max_pre_ver, 'upgrade', version)
         else:
             if version != max_rel_ver:
                 vecs[major][str(version)] = str(max_rel_ver)
-                symlink_versions(max_rel_ver, 'update', version)
+                symlink_versions(max_rel_ver, 'upgrade', version)
 
 dump('vecs', vecs)
