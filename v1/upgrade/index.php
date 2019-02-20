@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/functions.php';
 
 $files = array_map('basename', glob(__DIR__ . '/*.json'));
 $files = array_filter($files, function($filename) {
-	return !preg_match('#\.(latest|update)\.json$#', $filename);
+	return !preg_match('#\.(latest|upgrade)\.json$#', $filename);
 });
 usort($files, function($a, $b) {
 	return str_replace('+', '/', $a) <=> str_replace('+', '/', $b);
