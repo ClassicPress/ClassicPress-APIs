@@ -8,6 +8,7 @@ $endpoints = [
     '/events/1.0/',
     '/features/1.0/',
     '/secret-key/1.0/salt/',
+    '/migration/',
     '/upgrade/',
 ];
 
