@@ -94,7 +94,7 @@ foreach (['most-wanted', 'trending', 'recent'] as $view) {
 $tags = fider_list_tags();
 if (isset($tags['error'])) {
     $tags['operation'] = 'get:tags';
-    send_response($tags);
+    send_response($tags, true);
 }
 
 $results['tags'] = [];
