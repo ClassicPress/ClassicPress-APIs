@@ -1,6 +1,9 @@
 <?php
 
-// NOTE: DO NOT expose this script at a public URL!
+// Prevent exposure at a public URL.
+if (false === strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server')) {
+	die('Development only');
+}
 
 $file = __DIR__ . '/v1' . $_SERVER['REQUEST_URI'];
 $index = $file . '/index.php';
@@ -8,7 +11,7 @@ if (is_dir($file) && file_exists($index)) {
 	// Add trailing / if not already present
 	if (!preg_match('#/$#', $file)) {
 		header('HTTP/1.1 302 Found');
-		header("Location: $_SERVER[REQUEST_URI]/");
+		header("Location: ${_SERVER['REQUEST_URI']}/");
 		die();
 	}
 	// Load index.php file
@@ -17,6 +20,5 @@ if (is_dir($file) && file_exists($index)) {
 	header('Content-Type: application/json');
 	readfile($file);
 	die();
-} else {
-	return false;
 }
+return false;
