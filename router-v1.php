@@ -1,7 +1,9 @@
 <?php
 
-// Prevent exposure at a public URL.
-if (false === strpos($_SERVER['SERVER_SOFTWARE'], 'Development Server')) {
+// NOTE: DO NOT expose this script at a public URL!
+
+// Prevent usage in a webserver.
+if ('cli-server' !== php_sapi_name()) {
 	die('Development only');
 }
 
