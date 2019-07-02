@@ -22,5 +22,6 @@ if (is_dir($file) && file_exists($index)) {
 	header('Content-Type: application/json');
 	readfile($file);
 	die();
+} else {
+	return false;
 }
-return false;
