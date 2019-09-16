@@ -5,6 +5,8 @@ header( 'Content-Type: application/json' );
 // most new versions of WordPress and ClassicPress don't require any changes to
 // the migration plugin other than updating these parameters.
 
+// ClassicPress build info. See:
+// https://github.com/ClassyBot/ClassicPress-nightly/releases
 $build_version = '1.0.2';
 $build_date = '20190905';
 
