@@ -3,6 +3,7 @@
 /include/
 /lib/
 /local/
+/share/
 /pip-selfcheck.json
 # git repos
 /ClassicPress-nightly/
