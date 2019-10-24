@@ -11,10 +11,20 @@ usort($files, function($a, $b) {
 });
 
 if (is_browser()) {
-	echo "<h2>Upgrade API responses:</h2>\n";
+	echo "<h2>Upgrade API responses (release):</h2>\n";
 	echo "<ul>\n";
 	foreach ($files as $file) {
-		echo "<li><a href=\"$file\">$file</a></li>\n";
+		if (strpos($file, 'nightly') === false) {
+			echo "<li><a href=\"$file\">$file</a></li>\n";
+		}
+	}
+	echo "</ul>\n";
+	echo "<h2>Upgrade API responses (nightly):</h2>\n";
+	echo "<ul>\n";
+	foreach ($files as $file) {
+		if (strpos($file, 'nightly') !== false) {
+			echo "<li><a href=\"$file\">$file</a></li>\n";
+		}
 	}
 	echo "</ul>\n";
 } else {
