@@ -22,8 +22,8 @@ echo json_encode( [
 		'max'   => '5.4.1',
 		'other' => [
 			'#^4\.9$#',
-			'#^5\.3\.3-(alpha|beta|rc)#i',
-			'#^5\.4-(alpha|beta|rc)#i',
+			'#^5\.4\.2-(alpha|beta|rc)#i',
+			'#^5\.5-(alpha|beta|rc)#i',
 		],
 	],
 	// ClassicPress build to use for migration.
