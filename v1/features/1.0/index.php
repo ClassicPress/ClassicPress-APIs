@@ -27,27 +27,21 @@ function fider_list_tags() {
 }
 
 /**
- * Query the Fider (petitions site) API via cURL.
+ * Simulate a Fider (petitions site) API call.
  *
- * See: https://getfider.com/docs/api/
+ * Since petitions.classicpress.net is shut down as of December 31, 2020,
+ * known responses are now pulled from static .json files.
+ *
+ * DO NOT add code that results in any changes to the API endpoints called OR
+ * their arguments, otherwise this code will fail!
  */
 function fider_api_query($endpoint) {
-    $api_endpoint = 'https://petitions.classicpress.net/api/v1' . $endpoint;
+    $filename = __DIR__ . '/fider-' . trim(preg_replace('#[^a-z0-9]+#', '-', $endpoint), '-') . '.json';
 
-    $fch = curl_init($api_endpoint);
-    curl_setopt($fch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($fch);
-    $response = json_decode($response, true);
-
-    $status_code = curl_getinfo($fch, CURLINFO_HTTP_CODE);
-    if ($status_code !== 200) {
-        return ['error' => $status_code];
+    if (!file_exists($filename)) {
+        return ['error' => 404];
     }
-    if (!is_array($response)) {
-        return ['error' => 'unknown'];
-    }
-
-    return $response;
+    return json_decode(file_get_contents($filename), true);
 }
 
 /**
