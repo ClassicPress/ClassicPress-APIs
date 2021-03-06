@@ -1,2 +1,3 @@
+/v1/checksums/*.json
 /v1/twemoji/*.json
 /v1/upgrade/*.json
