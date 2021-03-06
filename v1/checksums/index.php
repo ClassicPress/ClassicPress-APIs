@@ -11,7 +11,7 @@ if (is_browser()) {
 	echo "<h2>Checksums API responses (release):</h2>\n";
 	echo "<ul>\n";
 	foreach ($files as $file) {
-		if (strpos($file, 'nightly') === false) {
+		if (strpos($file, 'nightly') === false && strpos($file, 'migration') === false) {
 			echo "<li><a href=\"$file\">$file</a></li>\n";
 		}
 	}
@@ -19,7 +19,7 @@ if (is_browser()) {
 	echo "<h2>Checksums API responses (nightly):</h2>\n";
 	echo "<ul>\n";
 	foreach ($files as $file) {
-		if (strpos($file, 'nightly') !== false) {
+		if (strpos($file, 'nightly') !== false || strpos($file, 'migration') !== false) {
 			echo "<li><a href=\"$file\">$file</a></li>\n";
 		}
 	}
