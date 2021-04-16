@@ -123,7 +123,7 @@ def write_checksums_json(tag, tag_data):
 
     rename(json_filename + '.tmp', json_filename)
 
-    print 'checksums for version ' + tag + ': ' + str(len(checksums))
+    print 'checksums for version ' + tag + ': ' + str(len(checksums)) + ' files'
 
 
 tags = {}
