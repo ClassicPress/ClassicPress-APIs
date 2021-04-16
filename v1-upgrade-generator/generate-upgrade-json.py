@@ -74,12 +74,12 @@ def write_and_link_latest_json(vecs, ver):
     write_json(ver, 'upgrade')
     symlink_versions(ver, 'latest', ver)
 
-def checksums_json_filename(ver):
+def checksums_json_filename(ver, format):
     filename = '%s.json' % ver
-    return join(repo_root, 'v1', 'checksums', filename)
+    return join(repo_root, 'v1', 'checksums', format, filename)
 
 def write_checksums_json(tag, tag_data):
-    json_filename = checksums_json_filename(tag)
+    json_filename = checksums_json_filename(tag, 'md5')
 
     if os.path.exists(json_filename):
         return
@@ -115,7 +115,11 @@ def write_checksums_json(tag, tag_data):
         checksums[file_path] = hash_md5.hexdigest()
 
     with open(json_filename + '.tmp', 'w') as jsonfile:
-        jsonfile.write(json.dumps({'checksums': checksums}))
+        jsonfile.write(json.dumps({
+            'version': tag,
+            'format': 'md5',
+            'checksums': checksums,
+        }))
 
     rename(json_filename + '.tmp', json_filename)
 

@@ -2,7 +2,7 @@
 
 require_once dirname(__DIR__) . '/functions.php';
 
-$files = array_map('basename', glob(__DIR__ . '/*.json'));
+$files = array_map('basename', glob(__DIR__ . '/md5/*.json'));
 usort($files, function($a, $b) {
 	return str_replace('+', '/', $a) <=> str_replace('+', '/', $b);
 });
@@ -36,7 +36,7 @@ if (is_browser()) {
 	echo "<h2>Checksums API responses (release):</h2>\n";
 	echo "<ul>\n";
 	foreach ($files_grouped_2['release'] as $release_file) {
-		echo "<li><a href=\"$release_file\">$release_file</a></li>\n";
+		echo "<li>$release_file: <a href=\"md5/$release_file\">md5</a></li>\n";
 	}
 	echo "</ul>\n";
 	echo "<h2>Checksums API responses (nightly/migration):</h2>\n";
@@ -60,14 +60,20 @@ HTML;
 	foreach ($files_grouped_2['nightly'] as $nightly_version => $nightly_files) {
 		$count = count($nightly_files);
 		$s = ($count === 1 ? '' : 's');
-		echo "<details><summary>$nightly_version+... ($count build$s)</summary>\n";
+		echo "<details><summary>$nightly_version+* ($count build$s)</summary>\n";
 		echo "<ul>\n";
 		foreach ($nightly_files as $nightly_file) {
-			echo "<li><a href=\"$nightly_file\">$nightly_file</a></li>\n";
+			echo "<li>$nightly_file: <a href=\"md5/$nightly_file\">md5</a></li>\n";
 		}
 		echo "</ul></details>\n";
 	}
 } else {
+	$files_grouped_2 = ['release' => [], 'nightly' => []];
+	foreach ($files_grouped_1 as $type => $files) {
+		foreach ($files as $file) {
+			$files_grouped_2[$type][] = "md5/$file";
+		}
+	}
 	header('Content-Type: application/json');
-	echo json_encode($files_grouped_1);
+	echo json_encode($files_grouped_2);
 }
