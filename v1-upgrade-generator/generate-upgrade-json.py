@@ -15,30 +15,30 @@ def dump(name, obj):
     print name + ': ' + json.dumps(obj, sort_keys=True, indent=2)
 
 def symlink_versions(ver_after, action, ver_before):
-    src = json_filename(ver_after, action)
-    dst = json_filename(ver_before)
+    src = upgrade_json_filename(ver_after, action)
+    dst = upgrade_json_filename(ver_before)
     print 'symlink(%s -> %s)' % (os.path.basename(dst), os.path.basename(src))
     os.symlink(os.path.basename(src), dst + '.tmp')
     os.rename(dst + '.tmp', dst)
 
-def json_filename(ver, action = None):
+def upgrade_json_filename(ver, action = None):
     if action is None:
         filename = '%s.json' % ver
     else:
         filename = '%s.%s.json' % (ver, action)
     return os.path.join(repo_root, 'v1', 'upgrade', filename)
 
-def write_json(ver, action):
-    filename = json_filename(ver, action)
-    print 'write_json(%s)' % os.path.basename(filename)
+def write_upgrade_json(ver, action):
+    filename = upgrade_json_filename(ver, action)
+    print 'write_upgrade_json(%s)' % os.path.basename(filename)
 
     if '+nightly' in str(ver):
         url = 'https://github.com/ClassyBot/ClassicPress-nightly/archive/%s.zip' % ver
     else:
         url = 'https://github.com/ClassicPress/ClassicPress-release/archive/%s.zip' % ver
 
-    with open(filename + '.tmp', 'w') as jsonfile:
-        jsonfile.write("""\
+    with open(filename + '.tmp', 'w') as json_file:
+        json_file.write("""\
 {{
 "offers": [
     {{
@@ -66,8 +66,8 @@ def write_json(ver, action):
 
 def write_and_link_latest_json(vecs, ver):
     vecs[ver.major][str(ver)] = 'latest'
-    write_json(ver, 'latest')
-    write_json(ver, 'upgrade')
+    write_upgrade_json(ver, 'latest')
+    write_upgrade_json(ver, 'upgrade')
     symlink_versions(ver, 'latest', ver)
 
 def checksums_json_filename(ver, format):
@@ -110,8 +110,8 @@ def write_checksums_json(tag, tag_data):
         hash_md5.update(repo[sha].data)
         checksums[file_path] = hash_md5.hexdigest()
 
-    with open(json_filename + '.tmp', 'w') as jsonfile:
-        jsonfile.write(json.dumps({
+    with open(json_filename + '.tmp', 'w') as json_file:
+        json_file.write(json.dumps({
             'version': tag,
             'format': 'md5',
             'checksums': checksums,
