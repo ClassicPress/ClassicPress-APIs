@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import collections
 import dulwich
 import dulwich.repo
 import hashlib
@@ -114,7 +115,7 @@ def write_checksums_json(tag, tag_data):
         json_file.write(json.dumps({
             'version': tag,
             'format': 'md5',
-            'checksums': checksums,
+            'checksums': collections.OrderedDict(sorted(checksums.items())),
         }))
 
     os.rename(json_filename + '.tmp', json_filename)
