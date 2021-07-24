@@ -35,7 +35,6 @@ echo json_encode( [
 		'disable-wp-core-updates-advance/disable-wp-core-updates-advance.php',
 		'disable-wordpress-updates/disable-updates.php',
 		'wp-downgrade/wp-downgrade.php',
-		'wordfence/wordfence.php',
 	],
 	'themes' => [
 		'twentytwentyone',
