@@ -19,11 +19,10 @@ echo json_encode( [
 	// WordPress versions allowed for migration.
 	'wordpress' => [
 		'min'   => '4.9.0',
-		'max'   => '5.5.3',
+		'max'   => '5.7.2',
 		'other' => [
 			'#^4\.9$#',
-			'#^5\.5\.4-(alpha|beta|rc)#i',
-			'#^5\.6-(alpha|beta|rc)#i',
+			'#^5\.8-(alpha|beta|rc)#i',
 		],
 	],
 	// ClassicPress build to use for migration.
@@ -31,4 +30,13 @@ echo json_encode( [
 		'build'   => $build_url,
 		'version' => $version,
 	],
+	'plugins' => [
+		'wp-config-file-editor/wp-config-file-editor.php',
+		'disable-wp-core-updates-advance/disable-wp-core-updates-advance.php',
+		'disable-wordpress-updates/disable-updates.php',
+		'wp-downgrade/wp-downgrade.php',
+	],
+	'themes' => [
+		'twentytwentyone',
+	]
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
