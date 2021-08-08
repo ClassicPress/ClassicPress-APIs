@@ -35,8 +35,19 @@ echo json_encode( [
 		'disable-wp-core-updates-advance/disable-wp-core-updates-advance.php',
 		'disable-wordpress-updates/disable-updates.php',
 		'wp-downgrade/wp-downgrade.php',
+		'wp-views/wp-views.php',
+		'types/wpcf.php',
+		'cred-frontend-editor/plugin.php',
+		'types-access/types-access.php',
+		'toolset-blocks/wp-views.php',
+		'toolset-maps/toolset-maps-loader.php',
+		'woocommerce-views/views-woocommerce.php',
+		'cred-commerce/plugin.php',
+		'elementor/elementor.php',
 	],
 	'themes' => [
 		'twentytwentyone',
+		'kadence',
+		'astra',
 	]
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
