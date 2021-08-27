@@ -44,6 +44,7 @@ echo json_encode( [
 		'woocommerce-views/views-woocommerce.php',
 		'cred-commerce/plugin.php',
 		'elementor/elementor.php',
+		'review-widgets-for-trustpilot/review-widgets-for-trustpilot.php',
 	],
 	'themes' => [
 		'twentytwentyone',
