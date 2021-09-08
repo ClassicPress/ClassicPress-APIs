@@ -30,6 +30,11 @@ echo json_encode( [
 		'build'   => $build_url,
 		'version' => $version,
 	],
+	'php' => [
+		'min' => '5.6',
+		'max' => '7.4.999',
+		'max_display' => '7.4.x',
+	],
 	'plugins' => [
 		'wp-config-file-editor/wp-config-file-editor.php',
 		'disable-wp-core-updates-advance/disable-wp-core-updates-advance.php',
