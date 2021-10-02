@@ -2,7 +2,7 @@
 <?php
 
 // Prevent usage in a webserver.
-if ('cli' !== php_sapi_name()) {
+if (php_sapi_name() !== 'cli') {
 	die('Command line only');
 }
 
@@ -11,7 +11,10 @@ if ('cli' !== php_sapi_name()) {
  * the data to a set of JSON files which are returned by the API endpoint.
  */
 
-function get_petitions_url($order, $json=true) {
+/**
+ * Return a URL for petitions, in JSON (API) or HTML (webpage) format.
+ */
+function get_petitions_url($order, $json = true) {
 	$base_url = 'https://forums.classicpress.net/c/governance/petitions/77';
 	return $base_url . ($json ? '.json' : '') . '?order=' . $order;
 }
@@ -49,6 +52,7 @@ $override_created_at = json_decode(
 	true
 );
 
+// The main loop for this script.
 foreach (['votes', 'latest', 'created'] as $order) {
 	$petitions = list_petitions($order);
 	if (isset($petitions['error'])) {
