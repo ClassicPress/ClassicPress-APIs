@@ -89,6 +89,15 @@ foreach (['votes', 'latest', 'created'] as $order) {
 		if ($petition_status === 'closed') {
 			continue;
 		}
+		/**
+		 * Skip 'latest' petitions with zero votes. This happens because the
+		 * petitions forum is set to automatically bump a random topic every so
+		 * often, and many of these topics have no new activity since the
+		 * petitions moved to the forums.
+		 */
+		if ($order === 'latest' && $topic['vote_count'] === 0) {
+			continue;
+		}
 		$results['data'][] = [
 			'title' => $topic['title'],
 			/**
