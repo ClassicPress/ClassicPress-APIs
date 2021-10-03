@@ -31,6 +31,10 @@ function get_petitions_url($order, $json = true, $page = 0) {
  */
 function list_petitions($order, $page = 0) {
 	$url = get_petitions_url($order, true, $page);
+	if (getenv('PETITIONS_DEBUG')) {
+		echo "GET $url\n";
+	}
+
 	$fch = curl_init($url);
 	curl_setopt($fch, CURLOPT_RETURNTRANSFER, true);
 	$response = curl_exec($fch);
@@ -68,7 +72,8 @@ foreach (['votes', 'latest', 'created'] as $order) {
 	do {
 		$petitions = list_petitions($order, $petitions_page);
 		if (isset($petitions['error'])) {
-			die("Error listing petitions by order=$order: $petitions[error]");
+			echo "Error listing petitions by order=$order: $petitions[error]\n";
+			exit(1);
 		}
 		$users_by_id = [];
 		foreach ($petitions['users'] as $user) {
@@ -132,11 +137,18 @@ foreach (['votes', 'latest', 'created'] as $order) {
 			}
 		}
 
+		if (getenv('PETITIONS_DEBUG')) {
+			echo "order=$order: " . count($results['data']) . " results\n";
+		}
+
 		// 'For order=latest' we may need to fetch more pages of petitions.
 		$petitions_page++;
 	} while (count($results['data']) < 10);
 
 	// Write then move, to avoid the API code reading a partially written file.
+	if (getenv('PETITIONS_DEBUG')) {
+		echo "write petitions-order-$order.json\n";
+	}
 	file_put_contents(
 		__DIR__ . '/petitions-order-' . $order . '.json.tmp',
 		json_encode($results)
