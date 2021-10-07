@@ -82,39 +82,71 @@ foreach (['votes', 'latest', 'created'] as $order) {
 		foreach ($petitions['topic_list']['topics'] as $topic) {
 			$op_id = $topic['posters'][0]['user_id'];
 			$op_username = $users_by_id[$op_id]['username'];
+
 			/**
 			 * ClassicPress expects the petition status field to be one of
 			 * 'open', 'planned', or 'started' (completed petitions are
-			 * currently not shown in the dashboard). The data is a bit messy,
-			 * so decide based on a combination of the tags and whether the
-			 * petition's thread is still open.
+			 * currently not shown in the dashboard).  Decide on a status based
+			 * on a combination of the tags and whether the petition's thread
+			 * is still open.
 			 */
-			$petition_status = $topic['closed'] ? 'closed' : 'open';
-			/**
-			 * A petition gets the 'declined' tag if it has been set to close,
-			 * but there is a period of 7 days before the forum thread actually
-			 * closes.
-			 */
-			$petition_declined = false;
+			$petition_flags = [
+				'closed'   => $topic['closed'],
+				'declined' => false,
+				'planned'  => false,
+				'started'  => false,
+			];
 			foreach ($topic['tags'] as $tag) {
 				switch ($tag) {
 					case 'planned':
-						if ($petition_status !== 'started') {
-							$petition_status = 'planned';
-						}
+						$petition_flags['planned'] = true;
 						break;
 					case 'pull-request':
 					case 'cp-research-plugin':
-						$petition_status = 'started';
+						$petition_flags['started'] = true;
 						break;
 					case 'declined':
-						$petition_declined = true;
+						$petition_flags['declined'] = true;
 						break;
 				}
 			}
-			if ($petition_status === 'closed' || $petition_declined) {
+			if ($petition_flags['declined']) {
+				/**
+				 * A petition gets the 'declined' tag if it has been set to
+				 * close, but there is a period of 7 days before the forum
+				 * thread actually closes.  Never show declined petitions.
+				 */
 				continue;
+			} else if ($petition_flags['started']) {
+				/**
+				 * 'started' takes precedence over 'planned', and petition
+				 * threads may be closed to free up users' votes for other
+				 * petitions once the implementation is started.  These
+				 * petitions should still be shown even if their thread is
+				 * closed.
+				 */
+				$petition_status = 'started';
+			} else if ($petition_flags['planned']) {
+				/**
+				 * Petition threads may be closed to free up users' votes for
+				 * other petitions once it is decided that they will be
+				 * implemented.  These petitions should still be shown even if
+				 * their thread is closed.
+				 */
+				$petition_status = 'planned';
+			} else if ($petition_flags['closed']) {
+				/**
+				 * If we get here, then the petition was closed but without any
+				 * other status that indicates it should still be shown in the
+				 * dashboard (it may have been completed).  These petitions
+				 * should not be shown.
+				 */
+				continue;
+			} else {
+				// The only other option left is an open petition.
+				$petition_status = 'open';
 			}
+
 			/**
 			 * Skip 'order=latest' petitions with zero votes. This happens
 			 * because the petitions forum is set to automatically bump a
@@ -124,6 +156,7 @@ foreach (['votes', 'latest', 'created'] as $order) {
 			if ($order === 'latest' && $topic['vote_count'] === 0) {
 				continue;
 			}
+
 			$results['data'][] = [
 				'title' => $topic['title'],
 				/**
