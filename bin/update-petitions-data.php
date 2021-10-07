@@ -90,6 +90,12 @@ foreach (['votes', 'latest', 'created'] as $order) {
 			 * petition's thread is still open.
 			 */
 			$petition_status = $topic['closed'] ? 'closed' : 'open';
+			/**
+			 * A petition gets the 'declined' tag if it has been set to close,
+			 * but there is a period of 7 days before the forum thread actually
+			 * closes.
+			 */
+			$petition_declined = false;
 			foreach ($topic['tags'] as $tag) {
 				switch ($tag) {
 					case 'planned':
@@ -101,9 +107,12 @@ foreach (['votes', 'latest', 'created'] as $order) {
 					case 'cp-research-plugin':
 						$petition_status = 'started';
 						break;
+					case 'declined':
+						$petition_declined = true;
+						break;
 				}
 			}
-			if ($petition_status === 'closed') {
+			if ($petition_status === 'closed' || $petition_declined) {
 				continue;
 			}
 			/**
