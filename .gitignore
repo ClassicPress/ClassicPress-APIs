@@ -1,3 +1,4 @@
 /v1/checksums/md5/*.json
+/v1/features/1.0/petitions-order-*.json
 /v1/twemoji/*.json
 /v1/upgrade/*.json

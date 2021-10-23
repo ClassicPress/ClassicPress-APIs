@@ -1,45 +1,21 @@
 <?php
 
 /**
- * Query feature requests for ClassicPress via the petitions site.
+ * List feature requests for ClassicPress via the petitions posted on the
+ * ClassicPress forums.
  *
- * This API serves as a CORS compliant proxy service to fetch this data on
- * behalf of ClassicPress installations.
+ * This API endpoint serves as a CORS-compliant proxy service to fetch, cache
+ * and serve this data on behalf of ClassicPress installations.
  */
 
 /**
- * List posts on the petitions site.
- *
- * See: https://getfider.com/docs/api/#list-posts
+ * Load a cached JSON file or send an error response if it does not exist.
  */
-function fider_list_posts($view) {
-    $query = http_build_query(['view' => $view, 'limit' => 10]);
-    return fider_api_query('/posts?' . $query);
-}
-
-/**
- * List tags on the petitions site.
- *
- * See: https://getfider.com/docs/api/#list-tags
- */
-function fider_list_tags() {
-    return fider_api_query('/tags');
-}
-
-/**
- * Simulate a Fider (petitions site) API call.
- *
- * Since petitions.classicpress.net is shut down as of December 31, 2020,
- * known responses are now pulled from static .json files.
- *
- * DO NOT add code that results in any changes to the API endpoints called OR
- * their arguments, otherwise this code will fail!
- */
-function fider_api_query($endpoint) {
-    $filename = __DIR__ . '/fider-' . trim(preg_replace('#[^a-z0-9]+#', '-', $endpoint), '-') . '.json';
-
+function load_cached_json($slug) {
+    $filename = __DIR__ . "/$slug.json";
     if (!file_exists($filename)) {
-        return ['error' => 404];
+        error_log("File not found: $filename");
+        send_response(['error' => 'Internal server error'], true);
     }
     return json_decode(file_get_contents($filename), true);
 }
@@ -58,47 +34,24 @@ function send_response($data, $is_error = false) {
     die(json_encode($data));
 }
 
-$results = [];
+$results = [
+    'most-wanted' => load_cached_json('petitions-order-votes'),
+    'trending'    => load_cached_json('petitions-order-latest'),
+    'recent'      => load_cached_json('petitions-order-created'),
+    'tags'        => [],
+    'link'        => 'https://forums.classicpress.net/c/governance/petitions/77',
+];
 
-foreach (['most-wanted', 'trending', 'recent'] as $view) {
-    $posts = fider_list_posts($view);
-    if (isset($posts['error'])) {
-        $posts['operation'] = 'get:posts:' . $view;
-        send_response($posts, true);
-    }
-    $results[$view] = [
-        'data' => [],
-        'link' => "https://petitions.classicpress.net/?view=$view",
-    ];
-    foreach ($posts as $post) {
-        $results[$view]['data'][] = [
-            'title' => $post['title'],
-            'description' => $post['description'],
-            'createdAt' => $post['createdAt'],
-            'createdBy' => $post['user']['name'],
-            'votesCount' => $post['votesCount'],
-            'commentsCount' => $post['commentsCount'],
-            'status' => $post['status'],
-            'tags' => $post['tags'],
-            'link' => "https://petitions.classicpress.net/posts/$post[number]/$post[slug]",
-        ];
-    }
-}
-
-$tags = fider_list_tags();
-if (isset($tags['error'])) {
-    $tags['operation'] = 'get:tags';
-    send_response($tags, true);
-}
-
-$results['tags'] = [];
+/**
+ * The 'tags' field is not used by ClassicPress, but it is retained to avoid
+ * breaking anything else that might be looking at this API.
+ */
+$tags = load_cached_json('fider-tags');
 foreach ($tags as $tag) {
     $results['tags'][$tag['slug']] = [
         'name' => $tag['name'],
         'color' => $tag['color'],
     ];
 }
-
-$results['link'] = 'https://petitions.classicpress.net/';
 
 send_response($results);
