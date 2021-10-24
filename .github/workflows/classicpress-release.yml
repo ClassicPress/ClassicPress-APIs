@@ -1,0 +1,41 @@
+name: Check for ClassicPress release
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check release repository
+        run: |
+          echo "Collect and process json"
+          RELEASE_DATA=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-nightly/releases?per_page=2" -O - | jq --compact-output '.[] | [.html_url]' | sed 's/\[\"//g' | sed 's/\"\]//g')
+          CURRENT_VERSION=$(echo "${RELEASE_DATA}" | grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.[[:digit:]]')
+          RELEASE_DATE=$(echo "${RELEASE_DATA: -8}")
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
+          echo "release_date=${RELEASE_DATE}" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Compare to Repository
+        run: |
+          API_VERSION=$(grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.[[:digit:]]' ./v1/migration/index.php)
+          API_DATE=$(grep -Eo -m1 '[[:digit:]]{8}' ./v1/migration/index.php)
+          if [ ${{ env.current_version }} != ${API_VERSION} ]; then
+            sed "s|${API_VERSION}|${{ env.current_version }}|" ./v1/migration/index.php
+            sed "s|${API_DATE}|${{ env.release_date }}|" ./v1/migration/index.php
+          fi
+      - name: Create Pull Request
+        id: createpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          branch: release/${{ env.current_version }}
+          commit-message: Update API for new ClassicPress Release
+          title: Update API for ${{ env.current_version }} release
+          body: |
+            Update API Endpoint
+            - Update endpoint to release ${{ env.current_version }}
+            - Update release date to ${{ env.release_date }}
