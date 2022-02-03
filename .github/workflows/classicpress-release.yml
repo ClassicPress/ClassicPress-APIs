@@ -51,9 +51,10 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           base: master
           branch: release/${{ env.current_version }}
-          commit-message: Update API for new ClassicPress Release
-          title: Update API for ${{ env.current_version }} release
+          commit-message: Update API for ClassicPress ${{ env.current_version }} release
+          title: Update API for ClassicPress ${{ env.current_version }} release
           body: |
-            Update API Endpoint
-            - Update endpoint to release ${{ env.current_version }}
+            Update API endpoint for migration
+            - Update release version to ${{ env.current_version }}
             - Update release date to ${{ env.release_date }}
+            See also https://github.com/ClassicPress/ClassicPress-APIs/pull/38.
