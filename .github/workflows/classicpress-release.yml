@@ -1,6 +1,7 @@
 name: Check for ClassicPress release
 
 on:
+  pull_request:
   schedule:
     - cron: '0 1 * * *'
 
