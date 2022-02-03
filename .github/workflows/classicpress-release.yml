@@ -15,7 +15,6 @@ jobs:
           RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
           CURRENT_VERSION=$(echo "${RELEASE_URL}" | sed 's#.*/##; s#%2B.*##; s#-.*##')
           RELEASE_DATE=$(echo "${RELEASE_URL: -8}")
-          RELEASE_DATE=
           if [ -z "$CURRENT_VERSION" ] || [ -z "$RELEASE_DATE" ]; then
             echo "Determining release info FAILED!"
             exit 1
