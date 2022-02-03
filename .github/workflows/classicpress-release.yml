@@ -23,8 +23,6 @@ jobs:
           echo "release_date=${RELEASE_DATE}" >> $GITHUB_ENV
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Compare to Repository
         run: |
           API_VERSION=$(grep '^\$build_version =' v1/migration/index.php | cut -d\' -f2)
@@ -39,6 +37,7 @@ jobs:
         with:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          base: master
           branch: release/${{ env.current_version }}
           commit-message: Update API for new ClassicPress Release
           title: Update API for ${{ env.current_version }} release
