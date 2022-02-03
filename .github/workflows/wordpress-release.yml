@@ -1,0 +1,38 @@
+name: Check for WordPress release
+
+on:
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check release repository
+        run: |
+          echo "Collect and process json"
+          RELEASE_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O - | jq --compact-output '.[] | limit( 1; .[] ) | {current}')
+          CURRENT_VERSION=$(echo "${RELEASE_DATA}" | grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.[[:digit:]]')
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Compare to Repository
+        run: |
+          MAX_WP_VERSION=$(grep -Eo -m1 "'max'\s*=>\s'([[:digit:]]\.[[:digit:]]\.[[:digit:]]*)'" ./v1/migration/index.php)
+          WP_VERSION=$(echo "${MAX_WP_VERSION}" | grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.[[:digit:]]')
+          if [ ${{ env.current_version }} != ${WP_VERSION} ]; then
+            sed "s|${WP_VERSION}|${{ env.current_version }}|" ./v1/migration/index.php
+          fi
+      - name: Create Pull Request
+        id: createpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          branch: release/${{ env.current_version }}
+          commit-message: Update API for new WordPressPress Release
+          title: Update API for ${{ env.current_version }} release
+          body: |
+            Update API Endpoint
+            - Update endpoint to release ${{ env.current_version }}
+            - Update release date to ${{ env.release_date }}
