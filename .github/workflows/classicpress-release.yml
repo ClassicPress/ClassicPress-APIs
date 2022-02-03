@@ -11,20 +11,25 @@ jobs:
       - name: Check release repository
         run: |
           echo "Collect and process json"
-          RELEASE_DATA=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-nightly/releases?per_page=2" -O - | jq --compact-output 'limit( 1; .[] ) | .html_url' | sed 's/\"//g' | sed 's/\"//g')
-          CURRENT_VERSION=$(echo "${RELEASE_DATA}" | grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.[[:digit:]]')
-          RELEASE_DATE=$(echo "${RELEASE_DATA: -8}")
+          RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
+          CURRENT_VERSION=$(echo "${RELEASE_URL}" | sed 's#.*/##; s#%2B.*##; s#-.*##')
+          RELEASE_DATE=$(echo "${RELEASE_URL: -8}")
+          RELEASE_DATE= # test error condition
+          if [ -z "$CURRENT_VERSION" ] || [ -z "$RELEASE_DATE" ]; then
+            echo "Determining release info FAILED!"
+            exit 1
+          fi
           echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
           echo "release_date=${RELEASE_DATE}" >> $GITHUB_ENV
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Compare to Repository
         run: |
-          API_VERSION=$(grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.[[:digit:]]' ./v1/migration/index.php)
-          API_DATE=$(grep -Eo -m1 '[[:digit:]]{8}' ./v1/migration/index.php)
-          if [ ${{ env.current_version }} != ${API_VERSION} ]; then
-            sed "s|${API_VERSION}|${{ env.current_version }}|" ./v1/migration/index.php
-            sed "s|${API_DATE}|${{ env.release_date }}|" ./v1/migration/index.php
+          API_VERSION=$(grep '^\$build_version =' v1/migration/index.php | cut -d\' -f2)
+          API_DATE=$(grep '^\$build_date =' v1/migration/index | cut -d\' -f2)
+          if [ "${{ env.current_version }}" != "${API_VERSION}" ]; then
+            sed -ri "s#^\\\$build_version =.*\$#\$build_version = '${{ env.current_version }}';#" v1/migration/index.php
+            sed -ri "s#^\\\$build_date =.*\$#\$build_date = '${{ env.release_date }}';#" v1/migration/index.php
           fi
       - name: Create Pull Request
         id: createpr
