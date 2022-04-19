@@ -39,7 +39,6 @@ jobs:
         if: ${{ env.proceed == 'true' }}
         run: |
           BRANCHES=$(git branch -a)
-          echo $BRANCHES
           if [[ "$BRANCHES" = *release/${{ env.current_version }}* ]]; then
             echo 'Update API PR already exists'
             echo "proceed=false" >> $GITHUB_ENV
