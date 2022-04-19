@@ -31,13 +31,15 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
         if: ${{ env.proceed == 'true' }}
 
       - name: Check for current Pull Request
         if: ${{ env.proceed == 'true' }}
         run: |
-          BRANCHES=$(git branch -r)
-          if [[ $BRANCHES == *"release/${{ env.current_version }}"* ]]; then
+          BRANCHES=$(git branch -a)
+          if [[ "$BRANCHES" = *release/${{ env.current_version }}* ]]; then
             echo 'Update API PR already exists'
             echo "proceed=false" >> $GITHUB_ENV
           fi
