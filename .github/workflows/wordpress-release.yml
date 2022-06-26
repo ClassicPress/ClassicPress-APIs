@@ -21,7 +21,7 @@ jobs:
 
       - name: Compare to Repository
         run: |
-          MAX_WP_VERSION=$(grep -Eo -m1 "'max'\s*=>\s'([[:digit:]]\.[[:digit:]]\.?[[:digit:]]*)'" ./v1/migration/index.php)
+          MAX_WP_VERSION=$(grep -Eo -m1 "'max'\s*=>\s'[[:digit:]]\.[[:digit:]]\.?[[:digit:]]*'" ./v1/migration/index.php)
           WP_VERSION=$(echo "${MAX_WP_VERSION}" | grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.?[[:digit:]]*')
 
           if [ ${{ env.current_version }} != ${WP_VERSION} ]; then
