@@ -23,10 +23,10 @@ jobs:
 
       - name: Compare to Repository
         run: |
-          MAX_WP_VERSION=$(grep -m 1 '\'max\'' v1/migration/index.php)
+          MAX_WP_VERSION=$(grep "\'max\'" v1/migration/index.php | head -n 1)
           WP_VERSION=$(echo "${MAX_WP_VERSION}" | cut -d\' -f4)
 
-          if [ ${{ env.current_version }} != ${WP_VERSION} ]; then
+          if [ "${{ env.current_version }}" != "${WP_VERSION}" ]; then
             echo "proceed=true" >> $GITHUB_ENV
             NEW_WP_VERSION=$(sed "s|${WP_VERSION}|${{ env.current_version }}|" <<< ${MAX_WP_VERSION} )
             sed -i "s|${MAX_WP_VERSION}|${NEW_WP_VERSION}|" v1/migration/index.php
