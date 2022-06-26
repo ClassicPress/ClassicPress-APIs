@@ -23,7 +23,7 @@ jobs:
 
       - name: Compare to Repository
         run: |
-          MAX_WP_VERSION=$(grep -Eo -m1 "\'max\'\s*=>\s\'[[:digit:]]\.[[:digit:]]\.?[[:digit:]]*\'" v1/migration/index.php)
+          MAX_WP_VERSION=$(grep -m 1 "\'max\'" v1/migration/index.php)
           WP_VERSION=$(echo "${MAX_WP_VERSION}" | cut -d\' -f4)
 
           if [ ${{ env.current_version }} != ${WP_VERSION} ]; then
@@ -37,7 +37,7 @@ jobs:
               NEW_TEST_VERSION=$(echo ${PARTS[0]}\\.$(( ${PARTS[1]} + 1 )))
             fi
             NEW_TEST=$(echo "${NEW_TEST_VERSION}-(alpha" | sed 's|\\|\\\\|g')
-            CURRENT_TEST=$(grep -Eo -m1 "[[:digit:]]+\\\.[[:digit:]]+-\(alpha" v1/migration/index.php | sed 's|\\|\\\\|g'
+            CURRENT_TEST=$(echo "${CURRENT_VERSION}-(alpha" | sed 's|\.|\\.|g')
             sed -i "s|${CURRENT_TEST}|${NEW_TEST}|" v1/migration/index.php
           else
             echo "Migration from WordPress ${{ env.current_version }} is already supported"
