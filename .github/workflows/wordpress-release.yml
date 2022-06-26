@@ -23,7 +23,7 @@ jobs:
 
       - name: Compare to Repository
         run: |
-          MAX_WP_VERSION=$(grep -m 1 "\'max\'" v1/migration/index.php)
+          MAX_WP_VERSION=$(grep -m 1 '\'max\'' v1/migration/index.php)
           WP_VERSION=$(echo "${MAX_WP_VERSION}" | cut -d\' -f4)
 
           if [ ${{ env.current_version }} != ${WP_VERSION} ]; then
@@ -44,6 +44,15 @@ jobs:
             echo "proceed=false" >> $GITHUB_ENV
           fi
 
+      - name: Check for current Pull Request
+        if: ${{ env.proceed == 'true' }}
+        run: |
+          BRANCHES=$(git branch -a)
+          if [[ "$BRANCHES" = *wprelease/${{ env.current_version }}* ]]; then
+            echo 'Update API PR already exists'
+            echo "proceed=false" >> $GITHUB_ENV
+          fi
+
       - name: Create Pull Request
         id: createpr
         uses: peter-evans/create-pull-request@v3
@@ -52,9 +61,9 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           base: master
-          branch: release/${{ env.current_version }}
+          branch: wprelease/${{ env.current_version }}
           commit-message: Update API for new WordPressPress Release
-          title: Update API for ${{ env.current_version }} release
+          title: Update API for WordPress ${{ env.current_version }} release
           body: |
             Update API Endpoint for migration
             - Update supported release verison to ${{ env.current_version }}
