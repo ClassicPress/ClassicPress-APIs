@@ -23,7 +23,7 @@ jobs:
 
       - name: Compare to Repository
         run: |
-          MAX_WP_VERSION=$(grep "\'max\'" v1/migration/index.php | head -n 1)
+          MAX_WP_VERSION=$(grep 'max' v1/migration/index.php | head -n 1)
           WP_VERSION=$(echo "${MAX_WP_VERSION}" | cut -d\' -f4)
 
           if [ "${{ env.current_version }}" != "${WP_VERSION}" ]; then
