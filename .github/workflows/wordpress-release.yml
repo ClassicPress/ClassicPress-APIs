@@ -14,7 +14,7 @@ jobs:
           echo "Collect and process json"
           RELEASE_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O - | jq --compact-output '.[] | limit( 1; .[] ) | {current}')
           CURRENT_DATA=$(echo ${RELEASE_DATA} | grep -Eo -m1 '[[:digit:]]+\.[[:digit:]]+\.?[[:digit:]]*')
-          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
+          echo "current_version=${CURRENT_DATA}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
       - name: Compare to Repository
         run: |
           MAX_WP_VERSION=$(grep -Eo -m1 "\'max\'\s*=>\s\'[[:digit:]]\.[[:digit:]]\.?[[:digit:]]*\'" v1/migration/index.php)
-          WP_VERSION=$(echo "${MAX_WP_VERSION}" | grep -Eo -m1 '[[:digit:]]\.[[:digit:]]\.?[[:digit:]]*')
+          WP_VERSION=$(echo "${MAX_WP_VERSION}" | cut -d\' -f4)
 
           if [ ${{ env.current_version }} != ${WP_VERSION} ]; then
             echo "proceed=true" >> $GITHUB_ENV
@@ -40,6 +40,7 @@ jobs:
             CURRENT_TEST=$(grep -Eo -m1 "[[:digit:]]+\\\.[[:digit:]]+-\(alpha" v1/migration/index.php | sed 's|\\|\\\\|g'
             sed -i "s|${CURRENT_TEST}|${NEW_TEST}|" v1/migration/index.php
           else
+            echo "Migration from WordPress ${{ env.current_version }} is already supported"
             echo "proceed=false" >> $GITHUB_ENV
           fi
 
