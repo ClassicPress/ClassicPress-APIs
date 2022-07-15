@@ -22,7 +22,7 @@ echo json_encode( [
 		'max'   => '6.0.1',
 		'other' => [
 			'#^4\.9$#',
-			'#^6\.16\.1-(alpha|beta|rc)#i',
+			'#^6\.1-(alpha|beta|rc)#i',
 		],
 	],
 	// ClassicPress build to use for migration.
