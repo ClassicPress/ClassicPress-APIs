@@ -10,10 +10,10 @@
  *  'is_acceptable' - boolean - Whether the PHP version is still acceptable for ClassicPress.
  */
 $json = [
-    'recommended_version' => '7.4',
+    'recommended_version' => '5.6',
     'is_supported'        => true,
-    'is_secure'           => true,
-    'is_acceptable'       => true,
+    'is_secure'           => false,
+    'is_acceptable'       => false,
 ];
 
 header('Content-Type: application/json');
