@@ -4,6 +4,7 @@ require_once __DIR__ . '/functions.php';
 
 $endpoints = [
     '/checksums/',
+    '/core/importers/1.0/',
     '/core/stable-check/1.0/',
     '/core/version-check/1.0/',
     '/events/1.0/',
