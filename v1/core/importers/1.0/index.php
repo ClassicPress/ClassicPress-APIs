@@ -48,12 +48,6 @@ echo json_encode([
             "description" => "Install the Tumblr importer to import posts & media from Tumblr using their API.",
             "plugin-slug" => "tumblr-importer",
             "importer-id" => "tumblr"
-        ],
-        "wordpress" => [
-            "name" => "WordPress",
-            "description" => "Install the WordPress importer to import posts, pages, comments, custom fields, categories, and tags from a WordPress export file.",
-            "plugin-slug" => "wordpress-importer",
-            "importer-id" => "wordpress"
         ]
     ],
     "translated" => false
