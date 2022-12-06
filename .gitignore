@@ -2,3 +2,4 @@
 /v1/features/1.0/petitions-order-*.json
 /v1/twemoji/*.json
 /v1/upgrade/*.json
+.DS_store
