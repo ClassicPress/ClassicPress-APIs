@@ -43,7 +43,7 @@ if ( ! in_array( $php_version, $allowed_php_versions_for_check ) ) {
 }
 
 // For versions less than 7.4 in array not recommended.
-if ( floatval( $php_version ) > 7.4 ) {
+if ( floatval( $php_version ) <= 7.3 ) {
     $json = [
         'recommended_version' => $recommended_version,
         'is_supported'        => true,
