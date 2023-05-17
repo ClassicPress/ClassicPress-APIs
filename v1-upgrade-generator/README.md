@@ -25,6 +25,7 @@ The script relies on a couple of `git` repositories being in place:
 ```
 cd v1-upgrade-generator/
 git clone https://github.com/ClassyBot/ClassicPress-nightly ClassicPress-nightly
+git clone https://github.com/ClassyBot/ClassicPress-v2-nightly ClassicPress-v2-nightly
 git clone https://github.com/ClassicPress/ClassicPress-release ClassicPress-release
 ```
 

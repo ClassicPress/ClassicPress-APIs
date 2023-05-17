@@ -16,6 +16,10 @@ pushd ClassicPress-nightly
 	git fetch
 	git fetch --tags
 popd
+pushd ClassicPress-v2-nightly
+	git fetch
+	git fetch --tags
+popd
 pushd ClassicPress-release
 	git fetch
 	git fetch --tags

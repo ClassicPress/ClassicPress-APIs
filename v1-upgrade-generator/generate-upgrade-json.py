@@ -133,25 +133,29 @@ with load_repo('ClassicPress-nightly') as r_nightly:
     for (tag, sha) in r_nightly.refs.as_dict('refs/tags').iteritems():
         tags[tag] = {'repo': r_nightly, 'sha': sha}
 
-    with load_repo('ClassicPress-release') as r_release:
-        for (tag, sha) in r_release.refs.as_dict('refs/tags').iteritems():
-            tags[tag] = {'repo': r_release, 'sha': sha}
+with load_repo('ClassicPress-v2-nightly') as r2_nightly:
+    for (tag, sha) in r2_nightly.refs.as_dict('refs/tags').iteritems():
+       tags[tag] = {'repo': r2_nightly, 'sha': sha}
 
-        dump('tags', dict((t, tags[t]['sha']) for t in tags))
+with load_repo('ClassicPress-release') as r_release:
+    for (tag, sha) in r_release.refs.as_dict('refs/tags').iteritems():
+        tags[tag] = {'repo': r_release, 'sha': sha}
 
-        for tag in tags:
-            write_checksums_json(tag, tags[tag])
-            try:
-                ver = semver.parse_version_info(tag)
-                # we only care about release and nightly builds
-                if not ver.build or ver.build[:7] == 'nightly':
-                    if ver.major in vers:
-                        vers[ver.major].append(ver)
-                    else:
-                        vers[ver.major] = [ver]
-            except ValueError:
-                # ignore non-semver tags
-                pass
+dump('tags', dict((t, tags[t]['sha']) for t in tags))
+
+for tag in tags:
+    write_checksums_json(tag, tags[tag])
+    try:
+        ver = semver.parse_version_info(tag)
+        # we only care about release and nightly builds
+        if not ver.build or ver.build[:7] == 'nightly':
+            if ver.major in vers:
+                vers[ver.major].append(ver)
+            else:
+                vers[ver.major] = [ver]
+    except ValueError:
+        # ignore non-semver tags
+        pass
 
 dump('vers', dict((major, sorted(str(v) for v in arr)) for (major, arr) in vers.iteritems()))
 
