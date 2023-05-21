@@ -33,8 +33,10 @@ def write_upgrade_json(ver, action):
     filename = upgrade_json_filename(ver, action)
     print 'write_upgrade_json(%s)' % os.path.basename(filename)
 
-    if '+nightly' in str(ver):
+    if ('+nightly' in str(ver) and ver.startswith('1')):
         url = 'https://github.com/ClassyBot/ClassicPress-nightly/archive/%s.zip' % ver
+    elif ('+nightly' in str(ver) and ver.startswith('2')):
+        url = 'https://github.com/ClassyBot/ClassicPress-v2-nightly/archive/%s.zip' % ver
     else:
         url = 'https://github.com/ClassicPress/ClassicPress-release/archive/%s.zip' % ver
 
