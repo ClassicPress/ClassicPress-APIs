@@ -19,7 +19,7 @@ cd twemoji
 git fetch origin
 
 # Generate each of the JSON file listings we need
-for spec in 6f3545b9:2/svg; do
+for spec in 16fb3e0:v/14.0.2/svg; do
 	commit="$(echo "$spec" | cut -d ":" -f 1)"
 	subdir="$(echo "$spec" | cut -d ":" -f 2)"
 	json_filename_base="$(echo "$commit")_$(echo "$subdir" | tr "/" "_").json"
