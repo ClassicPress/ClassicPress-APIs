@@ -40,6 +40,11 @@ def write_upgrade_json(ver, action):
     else:
         url = 'https://github.com/ClassicPress/ClassicPress-release/archive/%s.zip' % ver
 
+    if (str(ver).startswith('1')):
+        php_version = '5.6.4'
+    else:
+        php_version = '7.4'
+
     with open(filename + '.tmp', 'w') as json_file:
         json_file.write("""\
 {{
@@ -57,13 +62,13 @@ def write_upgrade_json(ver, action):
         }},
         "current":"{ver}",
         "version":"{ver}",
-        "php_version":"5.6.4",
+        "php_version":"{php_version}",
         "mysql_version":"5.0",
         "new_bundled":"4.7",
         "partial_version":false
     }}
 ]
-}}""".format(action=action, url=url, ver=str(ver)))
+}}""".format(action=action, url=url, ver=str(ver), php_version=str(php_version)))
 
     os.rename(filename + '.tmp', filename)
 
