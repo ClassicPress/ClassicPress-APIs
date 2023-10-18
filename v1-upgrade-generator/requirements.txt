@@ -1,4 +1,4 @@
 certifi==2023.7.22
 dulwich==0.19.8
 semver==2.8.1
-urllib3==1.26.17
+urllib3==1.26.18
