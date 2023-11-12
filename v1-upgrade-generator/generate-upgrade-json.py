@@ -50,17 +50,17 @@ def write_upgrade_json(ver, action):
         "locale":"en_US",
         "packages":{{
             "full":"{url}",
-            "no_content":None,
-            "new_bundled":None,
-            "partial":False,
-            "rollback":False
+            "no_content":"None",
+            "new_bundled":"None",
+            "partial":"False",
+            "rollback":"False"
         }},
         "current":"{ver}",
         "version":"{ver}",
         "php_version":"{php_version}",
         "mysql_version":"5.0",
         "new_bundled":"4.7",
-        "partial_version":False
+        "partial_version":"False"
     }}
 ]
 }}''')
