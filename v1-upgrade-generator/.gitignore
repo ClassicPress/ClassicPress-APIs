@@ -5,6 +5,8 @@
 /local/
 /share/
 /pip-selfcheck.json
+/pyvenv.cfg
 # git repos
 /ClassicPress-nightly/
+/ClassicPress-v2-nightly/
 /ClassicPress-release/
