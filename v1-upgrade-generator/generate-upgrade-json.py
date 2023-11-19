@@ -32,7 +32,7 @@ def write_upgrade_json(ver, action):
     print(f'write_upgrade_json({os.path.basename(filename)})')
 
     if ('+nightly' in str(ver) and str(ver).startswith('1')):
-        url = f'https://github.com/ClassyBot/ClassicPress-nightly/archive/{ver}.zip'
+        url = f'https://github.com/ClassyBot/ClassicPress-v1-nightly/archive/{ver}.zip'
     elif ('+nightly' in str(ver) and str(ver).startswith('2')):
         url = f'https://github.com/ClassyBot/ClassicPress-v2-nightly/archive/{ver}.zip'
     else:
@@ -113,7 +113,7 @@ vers = {}
 def load_repo(folder_name):
     return git.Repo(os.path.join(script_dir, folder_name))
 
-with load_repo('ClassicPress-nightly') as r_nightly:
+with load_repo('ClassicPress-v1-nightly') as r_nightly:
     for tag in r_nightly.tags:
         sha = tag.commit.hexsha
         tags[tag.name] = {'repo': r_nightly, 'sha': sha}

@@ -12,7 +12,7 @@ jobs:
       - name: Check release repository
         run: |
           echo "Collect and process json"
-          RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
+          RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-v1-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
           CURRENT_VERSION=$(echo "${RELEASE_URL}" | sed 's#.*/##; s#%2B.*##')
           RELEASE_DATE=$(echo "${RELEASE_URL: -8}")
           if [ -z "$CURRENT_VERSION" ] || [ -z "$RELEASE_DATE" ]; then

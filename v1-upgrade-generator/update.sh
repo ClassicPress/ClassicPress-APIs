@@ -20,7 +20,7 @@ update_repo() {
     cd -
 }
 
-update_repo ClassicPress-nightly
+update_repo ClassicPress-v1-nightly
 update_repo ClassicPress-v2-nightly
 update_repo ClassicPress-release
 

@@ -6,12 +6,12 @@ header( 'Content-Type: application/json' );
 // the migration plugin other than updating these parameters.
 
 // ClassicPress build info. See:
-// https://github.com/ClassyBot/ClassicPress-nightly/releases
+// https://github.com/ClassyBot/ClassicPress-v1-nightly/releases
 $build_version = '1.7.1';
 $build_date = '20231014';
 
 $version = "$build_version+migration.$build_date";
-$build_url = 'https://github.com/ClassyBot/ClassicPress-nightly'
+$build_url = 'https://github.com/ClassyBot/ClassicPress-v1-nightly'
 	. "/releases/download/$build_version%2Bmigration.$build_date"
 	. "/ClassicPress-nightly-$build_version-migration.$build_date.zip";
 
