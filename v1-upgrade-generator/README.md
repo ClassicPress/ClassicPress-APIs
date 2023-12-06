@@ -5,13 +5,12 @@ ClassicPress uses to determine upgrade paths.
 
 ### Development
 
-The script runs on Python 2.7 and uses a
+The script runs on Python 3 and uses a
 [virtualenv](https://virtualenv.pypa.io/en/stable/)
 to isolate its dependencies from the rest of the system.
 
-Assuming that your system's default Python version is `2.7` or higher (but not
-`3.x` as the script is untested there), here is how to set up the development
-environment:
+Assuming that your system's default Python version `3.x`,
+here is how to set up the development environment:
 
 ```
 cd v1-upgrade-generator/
