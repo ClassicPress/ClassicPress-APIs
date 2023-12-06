@@ -12,7 +12,7 @@ jobs:
       - name: Check release repository
         run: |
           echo "Collect and process json"
-          RELEASE_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O - | jq --compact-output '.[] | limit( 1; .[] ) | {current}')
+          RELEASE_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O - | jq --compact-output '.["offers"] | limit( 1; .[] ) | {current}')
           CURRENT_DATA=$(echo ${RELEASE_DATA} | grep -Eo -m1 '[[:digit:]]+\.[[:digit:]]+\.?[[:digit:]]*')
           echo "current_version=${CURRENT_DATA}" >> $GITHUB_ENV
 
