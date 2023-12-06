@@ -60,7 +60,7 @@ jobs:
         with:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          base: master
+          base: main
           branch: release/${{ env.current_version }}
           commit-message: Update API for ClassicPress ${{ env.current_version }} release
           title: Update API for ClassicPress ${{ env.current_version }} release
