@@ -88,12 +88,13 @@ def write_checksums_json(tag, tag_data):
     repo = tag_data['repo']
     tag_or_commit = repo.commit(tag_sha)
     checksums = {}
+    blobs = list(tag_or_commit.tree.traverse())
 
-    for blob in tag_or_commit.tree.blobs:
+    for blob in blobs:
         file_path = blob.path
         sha = blob.hexsha
         hash_md5 = hashlib.md5()
-        hash_md5.update(repo.git.show(sha).encode())
+        hash_md5.update(repo.git.show(sha).encode('raw_unicode_escape'))
         checksums[file_path] = hash_md5.hexdigest()
 
     with open(json_filename + '.tmp', 'w') as json_file:
