@@ -61,7 +61,7 @@ jobs:
         with:
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          base: master
+          base: main
           branch: wprelease/${{ env.current_version }}
           commit-message: Update API for new WordPress ${{ env.current_version }} Release
           title: Update API for WordPress ${{ env.current_version }} release
