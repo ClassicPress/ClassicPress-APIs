@@ -91,6 +91,8 @@ def write_checksums_json(tag, tag_data):
     blobs = list(tag_or_commit.tree.traverse())
 
     for blob in blobs:
+        if blob.type == "tree":
+            continue
         file_path = blob.path
         sha = blob.hexsha
         hash_md5 = hashlib.md5()
