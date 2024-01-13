@@ -182,7 +182,7 @@ for major, version_list in vers.items():
                 vecs[major][str(version)] = str(max_bld_ver)
                 symlink_versions(max_bld_ver, 'upgrade', version)
         elif version.prerelease:
-            if version < max_rel_ver:
+            if max_rel_ver is not None and version < max_rel_ver:
                 vecs[major][str(version)] = str(max_rel_ver)
                 symlink_versions(max_rel_ver, 'upgrade', version)
             elif version != max_pre_ver:
