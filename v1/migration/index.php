@@ -31,9 +31,9 @@ echo json_encode( [
 		'version' => $version,
 	],
 	'php' => [
-		'min' => '5.6',
-		'max' => '7.4.999',
-		'max_display' => '7.4.x',
+		'min' => '7.4',
+		'max' => '8.3.999',
+		'max_display' => '8.3.x',
 	],
 	'plugins' => [
 		'wp-config-file-editor/wp-config-file-editor.php',
