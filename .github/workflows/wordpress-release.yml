@@ -6,18 +6,24 @@ on:
     - cron: '0 1 * * *'
 
 jobs:
-  release-check:
+  wp-release-check:
     runs-on: ubuntu-latest
     steps:
       - name: Check release repository
         run: |
           echo "Collect and process json"
-          RELEASE_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O - | jq --compact-output '.["offers"] | limit( 1; .[] ) | {current}')
+          API_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O -)
+          RELEASE_DATA=$(echo ${API_DATA} | jq --compact-output '.["offers"] | limit( 1; .[] ) | {current}')
           CURRENT_DATA=$(echo ${RELEASE_DATA} | grep -Eo -m1 '[[:digit:]]+\.[[:digit:]]+\.?[[:digit:]]*')
+          VERSION_DATA=$(echo ${API_DATA} | jq --compact-output '.["offers"] | map_values( {version} )')
+          WP49_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[4]\.[9]\.[[:digit:]]+')
+          WP62_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[6]\.[2]\.[[:digit:]]+')
           echo "current_version=${CURRENT_DATA}" >> $GITHUB_ENV
+          echo "wp49_version=${WP49_VERSION}" >> $GITHUB_ENV
+          echo "wp62_version=${WP62_VERSION}" >> $GITHUB_ENV
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -25,6 +31,8 @@ jobs:
         run: |
           MAX_WP_VERSION=$(grep 'max' v1/migration/index.php | head -n 1)
           WP_VERSION=$(echo "${MAX_WP_VERSION}" | cut -d\' -f4)
+          WP49_VERSION=$(grep '$wp49' v1/migration/index.php | head -n 1 | grep -Eo -m1 '[4]+\.[9]+\.?[[:digit:]]*')
+          WP62_VERSION=$(grep '$wp62' v1/migration/index.php | head -n 1 | grep -Eo -m1 '[6]+\.[2]+\.?[[:digit:]]*')
 
           if [ "${{ env.current_version }}" != "${WP_VERSION}" ]; then
             echo "proceed=true" >> $GITHUB_ENV
@@ -40,6 +48,12 @@ jobs:
             NEW_TEST=$(echo "${NEW_TEST_VERSION}-(alpha" | sed 's|\\|\\\\|g')
             CURRENT_TEST=$(echo "${MINOR_VERSION}-(alpha" | sed 's|\.|\\\\.|g')
             sed -i "s|${CURRENT_TEST}|${NEW_TEST}|" v1/migration/index.php
+            if [ "${{ env.wp49_version }}" != "${WP49_VERSION}" ]; then
+              sed -i "s|wordpress-${WP49_VERSION}|wordpress-${{ env.wp49_version }}|" v1/migration/index.php
+            fi
+            if [ "${{ env.wp62_version }}" != "${WP62_VERSION}" ]; then
+              sed -i "s|wordpress-${WP62_VERSION}|wordpress-${{ env.wp62_version }}|" v1/migration/index.php
+            fi
           else
             echo "Migration from WordPress ${{ env.current_version }} is already supported"
             echo "proceed=false" >> $GITHUB_ENV
@@ -56,7 +70,7 @@ jobs:
 
       - name: Create Pull Request
         id: createpr
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v6
         if: ${{ env.proceed == 'true' }}
         with:
           committer: GitHub <noreply@github.com>

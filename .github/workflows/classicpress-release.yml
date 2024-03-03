@@ -6,10 +6,10 @@ on:
     - cron: '0 1 * * *'
 
 jobs:
-  release-check:
+  v2-release-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Check release repository
+      - name: Check v2 release repository
         run: |
           echo "Collect and process json"
           RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-v2-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
@@ -30,10 +30,21 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
         if: ${{ env.proceed == 'true' }}
+
+      - name: Compare to Repository
+        if: ${{ env.proceed == 'true' }}
+        run: |
+          API_VERSION=$(grep '^\$build_version =' v1/migration/index.php | cut -d\' -f2)
+          if [ "${{ env.current_version }}" != "${API_VERSION}" ]; then
+            sed -ri "s#^\\\$build_version =.*\$#\$build_version = '${{ env.current_version }}';#" v1/migration/index.php
+            sed -ri "s#^\\\$build_date =.*\$#\$build_date = '${{ env.release_date }}';#" v1/migration/index.php
+          else
+            echo "proceed=false" >> $GITHUB_ENV
+          fi
 
       - name: Check for current Pull Request
         if: ${{ env.proceed == 'true' }}
@@ -44,18 +55,9 @@ jobs:
             echo "proceed=false" >> $GITHUB_ENV
           fi
 
-      - name: Compare to Repository
-        if: ${{ env.proceed == 'true' }}
-        run: |
-          API_VERSION=$(grep '^\$build_version =' v1/migration/index.php | cut -d\' -f2)
-          if [ "${{ env.current_version }}" != "${API_VERSION}" ]; then
-            sed -ri "s#^\\\$build_version =.*\$#\$build_version = '${{ env.current_version }}';#" v1/migration/index.php
-            sed -ri "s#^\\\$build_date =.*\$#\$build_date = '${{ env.release_date }}';#" v1/migration/index.php
-          fi
-
       - name: Create Pull Request
         id: createpr
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v6
         if: ${{ env.proceed == 'true' }}
         with:
           committer: GitHub <noreply@github.com>
@@ -66,6 +68,72 @@ jobs:
           title: Update API for ClassicPress ${{ env.current_version }} release
           body: |
             Update API endpoint for migration
-            - Update release version to ${{ env.current_version }}
-            - Update release date to ${{ env.release_date }}
+            - Update v2 release version to ${{ env.current_version }}
+            - Update v2 release date to ${{ env.release_date }}
+            See also https://github.com/ClassicPress/ClassicPress-APIs/pull/38.
+
+  v1-release-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check v1 release repository
+        run: |
+          echo "Collect and process json"
+          RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-v1-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
+          CURRENT_VERSION=$(echo "${RELEASE_URL}" | sed 's#.*/##; s#%2B.*##')
+          RELEASE_DATE=$(echo "${RELEASE_URL: -8}")
+          if [ -z "$CURRENT_VERSION" ] || [ -z "$RELEASE_DATE" ]; then
+            echo "Determining release info FAILED!"
+            exit 1
+          fi
+          if [[ "$CURRENT_VERSION" = *-* ]]; then
+            echo "Latest nightly version is beta/RC/etc: $CURRENT_VERSION"
+            echo "Not proceeding!"
+            echo "proceed=false" >> $GITHUB_ENV
+          else
+            echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
+            echo "release_date=${RELEASE_DATE}" >> $GITHUB_ENV
+            echo "proceed=true" >> $GITHUB_ENV
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        if: ${{ env.proceed == 'true' }}
+
+      - name: Compare to Repository
+        if: ${{ env.proceed == 'true' }}
+        run: |
+          API_VERSION=$(grep '^\$v1_build_version =' v1/migration/index.php | cut -d\' -f2)
+          if [ "${{ env.current_version }}" != "${API_VERSION}" ]; then
+            sed -ri "s#^\\\$v1_build_version =.*\$#\$v1_build_version = '${{ env.current_version }}';#" v1/migration/index.php
+            sed -ri "s#^\\\$v1_build_date =.*\$#\$v1_build_date = '${{ env.release_date }}';#" v1/migration/index.php
+          else
+            echo "proceed=false" >> $GITHUB_ENV
+          fi
+
+      - name: Check for current Pull Request
+        if: ${{ env.proceed == 'true' }}
+        run: |
+          BRANCHES=$(git branch -a)
+          if [[ "$BRANCHES" = *release/${{ env.current_version }}* ]]; then
+            echo 'Update API PR already exists'
+            echo "proceed=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Pull Request
+        id: createpr
+        uses: peter-evans/create-pull-request@v6
+        if: ${{ env.proceed == 'true' }}
+        with:
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          base: main
+          branch: release/${{ env.current_version }}
+          commit-message: Update API for ClassicPress ${{ env.current_version }} release
+          title: Update API for ClassicPress ${{ env.current_version }} release
+          body: |
+            Update API endpoint for migration
+            - Update v1 release version to ${{ env.current_version }}
+            - Update v1 release date to ${{ env.release_date }}
             See also https://github.com/ClassicPress/ClassicPress-APIs/pull/38.
