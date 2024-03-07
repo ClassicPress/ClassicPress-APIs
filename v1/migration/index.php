@@ -15,6 +15,20 @@ $build_url = 'https://github.com/ClassyBot/ClassicPress-v2-nightly'
 	. "/releases/download/$build_version%2Bmigration.$build_date"
 	. "/ClassicPress-nightly-$build_version-migration.$build_date.zip";
 
+// ClassicPress build info. See:
+// https://github.com/ClassyBot/ClassicPress-v1-nightly/releases
+$v1_build_version = '1.7.2';
+$v1_build_date = '20240131';
+
+$v1_version = "$v1_build_version+migration.$v1_build_date";
+$v1_build_url = 'https://github.com/ClassyBot/ClassicPress-v1-nightly'
+	. "/releases/download/$v1_build_version%2Bmigration.$v1_build_date"
+	. "/ClassicPress-nightly-$v1_build_version-migration.$v1_build_date.zip";
+
+$wp49 = "https://wordpress.org/wordpress-4.9.25.zip";
+
+$wp62 = "https://wordpress.org/wordpress-6.2.3.zip";
+
 echo json_encode( [
 	// WordPress versions allowed for migration.
 	'wordpress' => [
@@ -34,6 +48,13 @@ echo json_encode( [
 		'min' => '7.4',
 		'max' => '8.3.999',
 		'max_display' => '8.3.x',
+	],
+	'links' => [
+		'ClassicPress v2'  => $build_url,
+		'ClassicPress v1'  => $v1_build_url,
+		'WordPress Latest' => 'https://wordpress.org/latest.zip',
+		'WordPress 6.2.x'  => $wp62,
+		'WordPress 4.9.x'  => $wp49,
 	],
 	'plugins' => [
 		'wp-config-file-editor/wp-config-file-editor.php',
