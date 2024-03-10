@@ -17,8 +17,8 @@ $build_url = 'https://github.com/ClassyBot/ClassicPress-v2-nightly'
 
 // ClassicPress build info. See:
 // https://github.com/ClassyBot/ClassicPress-v1-nightly/releases
-$v1_build_version = '1.7.2';
-$v1_build_date = '20240131';
+$v1_build_version = '1.7.3';
+$v1_build_date = '20240309';
 
 $v1_version = "$v1_build_version+migration.$v1_build_date";
 $v1_build_url = 'https://github.com/ClassyBot/ClassicPress-v1-nightly'
