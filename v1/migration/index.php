@@ -76,5 +76,9 @@ echo json_encode( [
 		'twentytwentyone',
 		'kadence',
 		'astra',
-	]
+	],
+	'defaults' => [
+		'theme_name' => 'Twenty Seventeen',
+		'theme_url'  => 'https://wordpress.org/themes/twentyseventeen/',
+	],
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
