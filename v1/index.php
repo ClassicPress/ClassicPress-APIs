@@ -10,6 +10,7 @@ $endpoints = [
     '/core/version-check/1.0/',
     '/events/1.0/',
     '/features/1.0/',
+    '/feature-requests/1.0/',
     '/secret-key/1.0/salt/',
     '/migration/',
     '/translations/core/1.0.0/translations.json',
