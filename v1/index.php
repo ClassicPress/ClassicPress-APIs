@@ -13,6 +13,7 @@ $endpoints = [
     '/secret-key/1.0/salt/',
     '/migration/',
     '/translations/core/1.0.0/translations.json',
+    '/translations/core/2.0.0/translations.json',
     '/twemoji/',
     '/upgrade/',
 ];
