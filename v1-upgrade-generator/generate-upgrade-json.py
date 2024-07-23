@@ -2,10 +2,10 @@
 
 import collections
 import git
-import hashlib
 import json
 import os
 import semver
+import subprocess
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 repo_root = os.path.dirname(script_dir)
@@ -90,14 +90,18 @@ def write_checksums_json(tag, tag_data):
     checksums = {}
     blobs = list(tag_or_commit.tree.traverse())
 
+    os.chdir(os.path.basename(repo.working_tree_dir))
+
     for blob in blobs:
         if blob.type == "tree":
             continue
         file_path = blob.path
         sha = blob.hexsha
-        hash_md5 = hashlib.md5()
-        hash_md5.update(repo.git.show(sha).encode('raw_unicode_escape'))
-        checksums[file_path] = hash_md5.hexdigest()
+        cmd = "git show {} | md5sum".format(sha)
+        returned_hash = subprocess.check_output(cmd, shell=True)
+        checksums[file_path] = returned_hash.decode( 'utf-8')[:32]
+
+    os.chdir("..")
 
     with open(json_filename + '.tmp', 'w') as json_file:
         json_file.write(json.dumps({
