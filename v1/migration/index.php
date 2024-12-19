@@ -46,8 +46,8 @@ echo json_encode( [
 	],
 	'php' => [
 		'min' => '7.4',
-		'max' => '8.3.999',
-		'max_display' => '8.3.x',
+		'max' => '8.4.999',
+		'max_display' => '8.4.x',
 	],
 	'links' => [
 		'ClassicPress v2'  => $build_url,
