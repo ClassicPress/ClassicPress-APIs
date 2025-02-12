@@ -33,7 +33,7 @@ echo json_encode( [
 	// WordPress versions allowed for migration.
 	'wordpress' => [
 		'min'   => '4.9.0',
-		'max'   => '6.7.1',
+		'max'   => '6.7.2',
 		'other' => [
 			'#^4\.9$#',
 			'#^6\.8-(alpha|beta|rc)#i',
