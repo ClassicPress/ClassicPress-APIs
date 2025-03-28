@@ -24,14 +24,14 @@ if ( is_dir( $translations_dir ) ) {
 		if( ! preg_match( '~^[0-9]+\.[0-9]\.?[0-9]*~', $file ) ) {
 			continue;
 		}
-		if( ! is_file($translations_dir.'/'.$file.'/translations.json' ) ) {
+		if( ! is_file( "$translations_dir/$file/translations.json" ) ) {
 			continue;
 		}
 		$endpoints[] = "/$translations_dir/$file/translations.json";
 	}
 }
 
-sort($endpoints);
+sort( $endpoints );
 
 if (is_browser()) {
     echo "<h2>Endpoints on this server:</h2>\n";
