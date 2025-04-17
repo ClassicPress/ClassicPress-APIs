@@ -12,11 +12,26 @@ $endpoints = [
     '/features/1.0/',
     '/secret-key/1.0/salt/',
     '/migration/',
-    '/translations/core/1.0.0/translations.json',
-    '/translations/core/2.0.0/translations.json',
     '/twemoji/',
     '/upgrade/',
 ];
+
+// Automatically add new core translations
+$translations_dir = 'translations/core';
+if ( is_dir( $translations_dir ) ) {
+	$directory = scandir( $translations_dir );
+	foreach ( $directory as $file ) {
+		if( ! preg_match( '~^[0-9]+\.[0-9]\.?[0-9]*~', $file ) ) {
+			continue;
+		}
+		if( ! is_file( "$translations_dir/$file/translations.json" ) ) {
+			continue;
+		}
+		$endpoints[] = "/$translations_dir/$file/translations.json";
+	}
+}
+
+sort( $endpoints );
 
 if (is_browser()) {
     echo "<h2>Endpoints on this server:</h2>\n";
