@@ -19,8 +19,8 @@ jobs:
           WP49_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[4]\.[9]\.[[:digit:]]+')
           WP62_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[6]\.[2]\.[[:digit:]]+')
           echo "current_version=${CURRENT_DATA}" >> $GITHUB_ENV
-          echo "wp49_version=${WP49_VERSION}" >> $GITHUB_ENV
-          echo "wp62_version=${WP62_VERSION}" >> $GITHUB_ENV
+          echo "wp49_version=${WP49_VERSION//[$'\n\r']}" >> $GITHUB_ENV
+          echo "wp62_version=${WP62_VERSION//[$'\n\r']}" >> $GITHUB_ENV
 
       - name: Checkout repository
         uses: actions/checkout@v4
