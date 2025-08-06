@@ -16,8 +16,8 @@ jobs:
           RELEASE_DATA=$(echo ${API_DATA} | jq --compact-output '.["offers"] | limit( 1; .[] ) | {current}')
           CURRENT_DATA=$(echo ${RELEASE_DATA} | grep -Eo -m1 '[[:digit:]]+\.[[:digit:]]+\.?[[:digit:]]*')
           VERSION_DATA=$(echo ${API_DATA} | jq --compact-output '.["offers"] | map_values( {version} )')
-          WP49_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[4]\.[9]\.[[:digit:]]+')
-          WP62_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[6]\.[2]\.[[:digit:]]+')
+          WP49_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[4]\.[9]\.[[:digit:]]+' | head -1)
+          WP62_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[6]\.[2]\.[[:digit:]]+' | head -1)
           echo "current_version=${CURRENT_DATA}" >> $GITHUB_ENV
           echo "wp49_version=${WP49_VERSION//[$'\n\r']}" >> $GITHUB_ENV
           echo "wp62_version=${WP62_VERSION//[$'\n\r']}" >> $GITHUB_ENV
