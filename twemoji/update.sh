@@ -9,7 +9,7 @@ if [ ! -d twemoji ] || [ ! -d twemoji/.git ]; then
 	mkdir -p twemoji
 	(
 		cd twemoji/
-		git clone https://github.com/twitter/twemoji .
+		git clone https://github.com/jdecked/twemoji .
 	)
 fi
 
@@ -19,7 +19,7 @@ cd twemoji
 git fetch origin
 
 # Generate each of the JSON file listings we need
-for spec in 16fb3e0:v/14.0.2/svg; do
+for spec in 49405cc:v/16.0.1/svg; do
 	commit="$(echo "$spec" | cut -d ":" -f 1)"
 	subdir="$(echo "$spec" | cut -d ":" -f 2)"
 	json_filename_base="$(echo "$commit")_$(echo "$subdir" | tr "/" "_").json"
