@@ -1,4 +1,4 @@
 certifi==2024.7.4
 gitpython==3.1.41
 semver==2.8.1
-urllib3==2.6.0
+urllib3==2.6.3
