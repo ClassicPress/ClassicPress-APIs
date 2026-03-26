@@ -7,8 +7,8 @@ header( 'Content-Type: application/json' );
 
 // ClassicPress build info. See:
 // https://github.com/ClassyBot/ClassicPress-v2-nightly/releases
-$build_version = '2.6.0';
-$build_date = '20251210';
+$build_version = '2.7.0';
+$build_date = '20260325';
 
 $version = "$build_version+migration.$build_date";
 $build_url = 'https://github.com/ClassyBot/ClassicPress-v2-nightly'
