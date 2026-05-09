@@ -1,4 +1,6 @@
 certifi==2026.4.22
-gitpython==3.1.47
+gitdb==4.0.12
+GitPython==3.1.50
 semver==3.0.4
-urllib3==2.6.3
+smmap==5.0.3
+urllib3==2.7.0
