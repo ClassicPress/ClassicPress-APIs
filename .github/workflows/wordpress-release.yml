@@ -14,14 +14,20 @@ jobs:
     steps:
       - name: Check release repository
         run: |
+          set -euo pipefail
           echo "Collect and process json"
-          API_DATA=$(wget -cq "https://api.wordpress.org/core/version-check/1.7/" -O -)
-          RELEASE_DATA=$(echo ${API_DATA} | jq --compact-output '.["offers"] | limit( 1; .[] ) | {current}')
-          CURRENT_DATA=$(echo ${RELEASE_DATA} | grep -Eo -m1 '[[:digit:]]+\.[[:digit:]]+\.?[[:digit:]]*')
-          VERSION_DATA=$(echo ${API_DATA} | jq --compact-output '.["offers"] | map_values( {version} )')
-          WP49_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[4]\.[9]\.[[:digit:]]+' | head -1)
-          WP62_VERSION=$(echo ${VERSION_DATA} | grep -Eo -m1 '[6]\.[2]\.[[:digit:]]+' | head -1)
-          echo "current_version=${CURRENT_DATA}" >> $GITHUB_ENV
+          API_DATA=$(curl -fsSL "https://api.wordpress.org/core/version-check/1.7/")
+          CURRENT_VERSION=$(jq -r '.offers[0].current // empty' <<< "$API_DATA")
+          WP49_VERSION=$(jq -r '[.offers[].version | select(startswith("4.9."))][0] // empty' <<< "$API_DATA")
+          WP62_VERSION=$(jq -r '[.offers[].version | select(startswith("6.2."))][0] // empty' <<< "$API_DATA")
+          if [ -z "$CURRENT_VERSION" ]; then
+            echo "Could not determine current WP version!"
+            exit 1
+          fi
+          if [ -z "$WP49_VERSION" ] || [ -z "$WP62_VERSION" ]; then
+            echo "Warning: 4.9.x or 6.2.x offer not found in API response"
+          fi
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_ENV
           echo "wp49_version=${WP49_VERSION//[$'\n\r']}" >> $GITHUB_ENV
           echo "wp62_version=${WP62_VERSION//[$'\n\r']}" >> $GITHUB_ENV
 

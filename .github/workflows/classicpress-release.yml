@@ -14,10 +14,17 @@ jobs:
     steps:
       - name: Check v2 release repository
         run: |
+          set -euo pipefail
           echo "Collect and process json"
-          RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-v2-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
+          RELEASE_URL=$(curl -fsSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/ClassyBot/ClassicPress-v2-nightly/releases?per_page=3" \
+            | jq -r '.[].html_url' | grep -m1 '%2Bnightly\.' || true)
+          if [ -z "$RELEASE_URL" ]; then
+            echo "No nightly release found in the last 3 releases!"
+            exit 1
+          fi
           CURRENT_VERSION=$(echo "${RELEASE_URL}" | sed 's#.*/##; s#%2B.*##')
-          RELEASE_DATE=$(echo "${RELEASE_URL: -8}")
+          RELEASE_DATE=$(echo "$RELEASE_URL" | grep -oE '[0-9]{8}$' || true)
           if [ -z "$CURRENT_VERSION" ] || [ -z "$RELEASE_DATE" ]; then
             echo "Determining release info FAILED!"
             exit 1
@@ -80,10 +87,17 @@ jobs:
     steps:
       - name: Check v1 release repository
         run: |
+          set -euo pipefail
           echo "Collect and process json"
-          RELEASE_URL=$(wget -cq "https://api.github.com/repos/ClassyBot/ClassicPress-v1-nightly/releases?per_page=3" -O - | jq -r '.[].html_url' | grep '%2Bnightly\.' | head -n1)
+          RELEASE_URL=$(curl -fsSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/ClassyBot/ClassicPress-v1-nightly/releases?per_page=3" \
+            | jq -r '.[].html_url' | grep -m1 '%2Bnightly\.' || true)
+          if [ -z "$RELEASE_URL" ]; then
+            echo "No nightly release found in the last 3 releases!"
+            exit 1
+          fi
           CURRENT_VERSION=$(echo "${RELEASE_URL}" | sed 's#.*/##; s#%2B.*##')
-          RELEASE_DATE=$(echo "${RELEASE_URL: -8}")
+          RELEASE_DATE=$(echo "$RELEASE_URL" | grep -oE '[0-9]{8}$' || true)
           if [ -z "$CURRENT_VERSION" ] || [ -z "$RELEASE_DATE" ]; then
             echo "Determining release info FAILED!"
             exit 1
