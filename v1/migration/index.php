@@ -33,10 +33,10 @@ echo json_encode( [
 	// WordPress versions allowed for migration.
 	'wordpress' => [
 		'min'   => '4.9.0',
-		'max'   => '7.0.4',
+		'max'   => '7.1',
 		'other' => [
 			'#^4\.9$#',
-			'#^7\.1-(alpha|beta|rc)#i',
+			'#^7\.2-(alpha|beta|rc)#i',
 		],
 	],
 	// ClassicPress build to use for migration.
