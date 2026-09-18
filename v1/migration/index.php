@@ -25,15 +25,15 @@ $v1_build_url = 'https://github.com/ClassyBot/ClassicPress-v1-nightly'
 	. "/releases/download/$v1_build_version%2Bmigration.$v1_build_date"
 	. "/ClassicPress-nightly-$v1_build_version-migration.$v1_build_date.zip";
 
-$wp49 = "https://wordpress.org/wordpress-4.9.31.zip";
+$wp49 = "https://wordpress.org/wordpress-4.9.32.zip";
 
-$wp62 = "https://wordpress.org/wordpress-6.2.11.zip";
+$wp62 = "https://wordpress.org/wordpress-6.2.12.zip";
 
 echo json_encode( [
 	// WordPress versions allowed for migration.
 	'wordpress' => [
 		'min'   => '4.9.0',
-		'max'   => '7.1',
+		'max'   => '7.1.1',
 		'other' => [
 			'#^4\.9$#',
 			'#^7\.2-(alpha|beta|rc)#i',
